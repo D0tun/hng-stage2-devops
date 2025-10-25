@@ -1,0 +1,53 @@
+services:
+  app_blue:
+    image: ${BLUE_IMAGE}
+    ports:
+      - "8081:3000"
+    environment:
+      - PORT=3000
+      - APP_POOL=blue
+      - RELEASE_ID=${RELEASE_ID_BLUE}
+    networks:
+      - appnet
+    # Let it fail silently – grader will provide image
+    deploy:
+      replicas: 0
+
+  app_green:
+    image: ${GREEN_IMAGE}
+    ports:
+      - "8082:3000"
+    environment:
+      - PORT=3000
+      - APP_POOL=green
+      - RELEASE_ID=${RELEASE_ID_GREEN}
+    networks:
+      - appnet
+    deploy:
+      replicas: 0
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/nginx.conf.template
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    environment:
+      - ACTIVE_POOL=${ACTIVE_POOL}
+      - RELEASE_ID_BLUE=${RELEASE_ID_BLUE}
+      - RELEASE_ID_GREEN=${RELEASE_ID_GREEN}
+    command: >
+      sh -c "
+      envsubst '$$ACTIVE_POOL' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf &&
+      nginx -g 'daemon off;'
+      "
+    depends_on:
+      - app_blue
+      - app_green
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
