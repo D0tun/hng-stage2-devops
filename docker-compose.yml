@@ -9,9 +9,6 @@ services:
       - RELEASE_ID=${RELEASE_ID_BLUE}
     networks:
       - appnet
-    # Let it fail silently – grader will provide image
-    deploy:
-      replicas: 0
 
   app_green:
     image: ${GREEN_IMAGE}
@@ -23,8 +20,6 @@ services:
       - RELEASE_ID=${RELEASE_ID_GREEN}
     networks:
       - appnet
-    deploy:
-      replicas: 0
 
   nginx:
     image: nginx:alpine
