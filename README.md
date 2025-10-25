@@ -13,5 +13,5 @@ This project deploys two Node.js apps (Blue & Green) behind Nginx with:
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/yourusername/hng-stage2-devops.git
+git clone https://github.com/D0tun/hng-stage2-devops.git
 cd hng-stage2-devops
